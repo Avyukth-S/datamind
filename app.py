@@ -1,19 +1,39 @@
 import pandas as pd
 import streamlit as st
 from pipeline import answer
+from followup import make_standalone
 
 st.set_page_config(page_title="DataMind", page_icon="🧠")
 
 st.title("DataMind: talk to your data")
 st.write("Ask a question about the TPC-H sample data (customers, orders, nations, regions).")
 
+if "last_question" not in st.session_state:
+    st.session_state.last_question = ""
+
 question = st.text_input("Your question", placeholder="Which 5 countries have the most customers?")
 
-if st.button("Ask") and question.strip():
+col1, col2 = st.columns([1, 4])
+ask = col1.button("Ask")
+if col2.button("New conversation"):
+    st.session_state.last_question = ""
+    st.rerun()
+
+if st.session_state.last_question:
+    st.caption("Previous question: " + st.session_state.last_question)
+
+if ask and question.strip():
     with st.spinner("Thinking... (Gemma and Snowflake are working)"):
-        result = answer(question)
+        standalone = make_standalone(question.strip(), st.session_state.last_question)
+        result = answer(standalone)
+
+    if standalone != question.strip():
+        st.caption("Understood as: " + standalone)
 
     status = result["status"]
+
+    if status in ("ok", "ambiguous"):
+        st.session_state.last_question = standalone
 
     if status == "ok":
         st.success(result["explanation"])
