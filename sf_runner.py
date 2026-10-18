@@ -13,6 +13,8 @@ def run_query(sql):
         password=os.getenv("SNOWFLAKE_PASSWORD"),
         role=os.getenv("SNOWFLAKE_ROLE"),
         warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
+        database="SNOWFLAKE_SAMPLE_DATA",
+        schema="TPCH_SF1",
         server_session_keep_alive_auto_detection=False,
     )
     try:
