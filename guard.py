@@ -11,14 +11,45 @@ def check_question(question, schema):
     prompt = f"""You are a gatekeeper for a database assistant.
 Decide if the QUESTION can be answered with the database described below.
 
+IMPORTANT: tables can be JOINED using the "links to" notes in the schema.
+For example, customers can be grouped by country by joining CUSTOMER to NATION.
+A question that needs a join, a count, a sum, an average or a ranking is still OK.
+
 Reply with exactly two lines:
 Line 1: one word, either OK, AMBIGUOUS or UNSUPPORTED
-Line 2: a short message for the user
+Line 2: a short message for the user (write "none" if OK)
 
-Rules:
-- OK: the question is clear and the data can answer it.
-- AMBIGUOUS: the question is too vague (for example "best" or "top" with no measure). Line 2 must be a clarifying question.
-- UNSUPPORTED: the data cannot answer it, it is unrelated to the data, or it asks to change or delete data. Line 2 must explain why.
+Labels:
+- OK: the question is clear and the data can answer it, directly or by joining tables.
+- AMBIGUOUS: the question uses a vague word like "best" or "top" or "good" with no measure given.
+- UNSUPPORTED: the question is about something not in the database at all (weather, news, people outside the data), or asks to change or delete data.
+
+When in doubt, answer OK.
+
+EXAMPLES:
+Question: How many customers are in each market segment?
+OK
+none
+
+Question: Which 5 countries have the most customers?
+OK
+none
+
+Question: Total order value by region?
+OK
+none
+
+Question: Show me the best customers
+AMBIGUOUS
+What do you mean by "best"? For example, highest account balance or most orders?
+
+Question: What is the weather in Delhi?
+UNSUPPORTED
+This database has customers and orders, but no weather data.
+
+Question: Delete all customers
+UNSUPPORTED
+This assistant can only read data, not change it.
 
 DATABASE:
 {schema}
