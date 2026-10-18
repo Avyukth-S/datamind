@@ -4,6 +4,7 @@ from sql_gen import question_to_sql, load_schema
 from safety import check_sql
 from sf_runner import run_query
 from explain import explain
+from validate import validate_sql
 
 
 def answer(question):
@@ -21,7 +22,10 @@ def answer(question):
     ok, reason = check_sql(sql)
     if not ok:
         return {"status": "error", "sql": sql, "message": "Blocked: " + reason}
-
+        
+    ok, reason = validate_sql(sql, schema)
+    if not ok:
+        return {"status": "error", "sql": sql, "message": "Invalid SQL: " + reason}
     try:
         columns, rows, query_id = run_query(sql)
     except Exception as e:
