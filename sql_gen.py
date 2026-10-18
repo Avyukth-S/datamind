@@ -17,6 +17,10 @@ def question_to_sql(question, schema):
 Use ONLY the tables and columns described below.
 Always use full table names like SNOWFLAKE_SAMPLE_DATA.TPCH_SF1.CUSTOMER.
 Write only ONE read-only SELECT statement. Return only the SQL, with no explanation.
+This is Snowflake SQL. For dates use YEAR(column), MONTH(column) or DATE_TRUNC.
+NEVER use STRFTIME, strftime, EXTRACT(... FROM strftime) or other SQLite/MySQL functions.
+Example: orders in 1995 -> WHERE YEAR(O_ORDERDATE) = 1995
+Country names in NATION.N_NAME are uppercase, for example 'INDIA'.
 
 SCHEMA:
 {schema}
