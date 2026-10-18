@@ -11,9 +11,9 @@ CHANGE_WORDS = ["delete", "drop", "update", "insert", "remove", "truncate", "alt
 VAGUE_WORDS = ["best", "worst", "good", "bad", "important", "popular", "biggest", "greatest", "top"]
 
 MEASURE_WORDS = [
-    "balance", "order", "orders", "count", "number", "total", "revenue", "price",
+    "balance", "count", "number", "total", "revenue", "price",
     "value", "spend", "spent", "quantity", "sales", "average", "sum", "how many",
-    "per", "each", "by ", "most", "least", "highest", "lowest",
+    "by ", "most", "least", "highest", "lowest", "fewest", "largest", "smallest",
 ]
 
 DATA_WORDS = [
