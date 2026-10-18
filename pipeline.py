@@ -2,12 +2,13 @@ import sys
 from sql_gen import question_to_sql, load_schema
 from safety import check_sql
 from sf_runner import run_query
+from explain import explain
 
 
 def answer(question):
     schema = load_schema()
     sql = question_to_sql(question, schema)
-    sql = sql.rstrip().rstrip(";")  # remove trailing semicolon
+    sql = sql.rstrip().rstrip(";")
 
     ok, reason = check_sql(sql)
     if not ok:
@@ -18,7 +19,14 @@ def answer(question):
     except Exception as e:
         return {"sql": sql, "error": f"Snowflake error: {e}"}
 
-    return {"sql": sql, "columns": columns, "rows": rows, "query_id": query_id}
+    explanation = explain(question, sql, columns, rows)
+    return {
+        "sql": sql,
+        "columns": columns,
+        "rows": rows,
+        "query_id": query_id,
+        "explanation": explanation,
+    }
 
 
 if __name__ == "__main__":
@@ -34,3 +42,5 @@ if __name__ == "__main__":
         print("COLUMNS:", result["columns"])
         for row in result["rows"]:
             print(row)
+        print()
+        print("EXPLANATION:", result["explanation"])
